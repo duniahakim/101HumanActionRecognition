@@ -1,10 +1,12 @@
 from pathlib import Path
 import cv2
 import os
+import random
 
 
-DATA_PATH = 'data/UCF50'
-FRAME_DATA_PATH = 'data/UCF50_FRAME'
+DATA_PATH = 'data/UCF101'
+FRAME_DATA_PATH = 'data/UCF101_Frames'
+NUM_VIDEOS_PER_CLASS = 50
 
 
 for dir in os.listdir(DATA_PATH):
@@ -12,11 +14,14 @@ for dir in os.listdir(DATA_PATH):
     if not os.path.isdir(class_dir_path):
         continue
 
-    for f in os.listdir(class_dir_path):
-        video_path = os.path.join(class_dir_path, f)
+    video_files = os.listdir(class_dir_path)
+    random.shuffle(video_files)
+    for i in range(NUM_VIDEOS_PER_CLASS):
+        video_file = video_files[i]
+        video_path = os.path.join(class_dir_path, video_file)
         if not os.path.isfile(video_path):
             continue
-        video_dir_name = f.replace('.avi', '')
+        video_dir_name = video_file.replace('.avi', '')
         video_dir_path = os.path.join(os.path.join(FRAME_DATA_PATH, dir), video_dir_name)
         if os.path.exists(video_dir_path):
             continue
