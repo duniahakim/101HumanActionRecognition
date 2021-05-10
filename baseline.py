@@ -11,7 +11,6 @@ import os
 import random
 from utils import compressed_pickle, decompress_pickle, plotLearningCurve
 import pickle
-from input_prep import get_all_input, get_input_from_file
 import tensorflow as tf
 from ourGenerator import OurGenerator
 from tensorflow.keras import regularizers
@@ -24,7 +23,7 @@ CHECKPOINT_PATH = "checkpoints/baseline_10epochs"
 # print(tf.config.list_physical_devices('GPU'))
 
 
-def get_model():
+def get_LSTM_model():
     model = Sequential()
     model.add(keras.Input(shape=(800, 2048)))
     model.add(LSTM(256))
@@ -42,15 +41,42 @@ def get_model():
     return model
 
 
+def get_CNN_model():
+    model = Sequential()
+    model.add(Conv3D(32, kernel_size=(3, 3, 3), activation='relu', kernel_initializer='he_uniform', input_shape=(10, 240, 320, 3),padding ="same"))
+    model.add(MaxPooling3D(pool_size=(1, 2, 2), strides=(1, 2, 2)))
+    model.add(MaxPooling3D(pool_size=(2, 2, 2)))
+    model.add(BatchNormalization(center=True, scale=True))
+    model.add(Dropout(0.5))
+
+    model.add(Conv3D(64, kernel_size=(3, 3, 3), activation='relu', kernel_initializer='he_uniform'))
+    model.add(MaxPooling3D(pool_size=(2, 2, 2)))
+    model.add(BatchNormalization(center=True, scale=True))
+    model.add(Dropout(0.5))
+    model.add(Flatten())
+
+    model.add(Dense(256, activation='relu', kernel_initializer='he_uniform'))
+    model.add(Dense(101, activation='softmax'))
+
+    # Compile the model
+    model.compile(loss='categorical_crossentropy',
+                  optimizer=Adam(lr=0.001),
+                  metrics=['accuracy'])
+    model.summary()
+    # plot_model(model, to_file='images/baseline.png', show_shapes=True, show_layer_names=True)
+
+    return model
+
+
 def main():
     cp_callback = tf.keras.callbacks.ModelCheckpoint(filepath=CHECKPOINT_PATH,
                         save_best_only=True, save_weights_only=False, verbose=1)
     history_checkpoint = LossHistory()
     labels = decompress_pickle('labels.pickle.pbz2')
     partition = decompress_pickle('partition.pickle.pbz2')
-    training_generator = OurGenerator(partition['train'], labels, use_pretrained = True)
-    validation_generator = OurGenerator(partition['val'], labels, use_pretrained = True)
-    model = get_model()
+    training_generator = OurGenerator(partition['train'], labels, use_pretrained = False)
+    validation_generator = OurGenerator(partition['val'], labels, use_pretrained = False)
+    model = get_CNN_model()
     model.build()
     model.summary()
     history = model.fit_generator(generator=training_generator,

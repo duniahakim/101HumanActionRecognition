@@ -9,3 +9,6 @@ checkpoints/
 history/
 history-checkpoints/
 models/
+__pycache__/input_prep.cpython-38.pyc
+__pycache__/lossHistory.cpython-38.pyc
+__pycache__/ourGenerator.cpython-38.pyc

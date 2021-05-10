@@ -62,7 +62,7 @@ class OurGenerator(keras.utils.Sequence):
 
             for i, ID in enumerate(list_IDs_temp):
                 # Store sample
-                x = np.array(decompress_pickle('new_inputs/' + ID + '.pickle.pbz2'))
+                x = np.array(decompress_pickle('input/' + ID + '.pickle.pbz2'))
                 x = keras.applications.resnet.preprocess_input(x)
                 x = self.model.predict(x)
                 x = x.reshape(-1, 2048)
@@ -80,7 +80,7 @@ class OurGenerator(keras.utils.Sequence):
             # Generate data
             for i, ID in enumerate(list_IDs_temp):
                 # Store sample
-                X[i,] = np.array(decompress_pickle('new_inputs/' + ID + '.pickle.pbz2'))
+                X[i,] = np.array(decompress_pickle('input/' + ID + '.pickle.pbz2'))
 
                 # Store class
                 y[i] = self.labels[ID]
