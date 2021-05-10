@@ -5,3 +5,7 @@ labels.pickle.pbz2
 class_to_int.pickle.pbz2
 input/
 __pycache__/utils.cpython-38.pyc
+checkpoints/
+history/
+history-checkpoints/
+models/

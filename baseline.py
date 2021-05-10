@@ -18,10 +18,10 @@ from tensorflow.keras import regularizers
 from lossHistory import LossHistory
 
 
-CHECKPOINT_PATH = "checkpoints/ours_7_10epochs"
+CHECKPOINT_PATH = "checkpoints/baseline_10epochs"
 
-print('is gpu available?')
-print(tf.config.list_physical_devices('GPU'))
+# print('is gpu available?')
+# print(tf.config.list_physical_devices('GPU'))
 
 
 def get_model():
@@ -57,8 +57,8 @@ def main():
                     validation_data=validation_generator,
                     epochs=10,
                     callbacks=[cp_callback, history_checkpoint])
-    model.save('models/ours_7_10epochs_model')
-    compressed_pickle('history/ours_7_10epochs.pickle', history.history)
+    model.save('models/baseline_model')
+    compressed_pickle('history/baseline_10epochs.pickle', history.history)
     # plotLearningCurve(history)
 
 

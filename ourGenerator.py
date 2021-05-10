@@ -6,7 +6,7 @@ import numpy as np
 class OurGenerator(keras.utils.Sequence):
     # 'Generates data for Keras'
     def __init__(self, list_IDs, labels, batch_size=32, dim=(10, 240, 320), n_channels=3,
-                 n_classes=50, shuffle=True, use_pretrained = False):
+                 n_classes=101, shuffle=True, use_pretrained = False):
         #'Initialization'
         self.dim = dim
         self.batch_size = batch_size
