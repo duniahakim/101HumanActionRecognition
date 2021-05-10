@@ -1,4 +1,5 @@
 from numpy import asarray
+import math
 from PIL import Image
 import numpy as np
 from keras.models import Sequential
@@ -54,9 +55,11 @@ def setupInput():
             num_frames_choose = FRAMES_PER_VIDEO
             if len(all_frames) < FRAMES_PER_VIDEO:
                 num_frames_choose = len(all_frames)
-            chosen_frames = random.choices(all_frames, k = num_frames_choose)
-            for frame in chosen_frames:
-                frame_path = os.path.join(video_dir_path, frame)
+            chosen_frames_indices = np.linspace(0, len(all_frames) - 1, num = num_frames_choose)
+            for frame_index in chosen_frames_indices:
+                frame_index = math.floor(frame_index)
+                frame_file = all_frames[frame_index]
+                frame_path = os.path.join(video_dir_path, frame_file)
                 if not os.path.isfile(frame_path):
                     continue
                 image = Image.open(frame_path)
