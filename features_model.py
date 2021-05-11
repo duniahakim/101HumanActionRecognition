@@ -41,7 +41,7 @@ def get_CNN_model():
                   optimizer=Adam(lr=0.001),
                   metrics=['accuracy'])
     model.summary()
-    # plot_model(model, to_file='images/baseline.png', show_shapes=True, show_layer_names=True)
+    # plot_model(model, to_file='plots/features.png', show_shapes=True, show_layer_names=True)
 
     return model
 
@@ -63,7 +63,7 @@ def main():
                     callbacks=[cp_callback, history_checkpoint])
     model.save('models/features_2epochs')
     compressed_pickle('history/features_2epochs.pickle', history.history)
-    # plotLearningCurve(history)
+    plotLearningCurve(history)
 
 
 if __name__ == "__main__":

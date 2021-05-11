@@ -41,7 +41,7 @@ def get_CNN_model():
                   optimizer=Adam(lr=0.001),
                   metrics=['accuracy'])
     model.summary()
-    plot_model(model, to_file='plots/baseline.png', show_shapes=True, show_layer_names=True)
+    # plot_model(model, to_file='plots/baseline.png', show_shapes=True, show_layer_names=True)
 
     return model
 
@@ -67,4 +67,4 @@ def main():
 
 
 if __name__ == "__main__":
-    print(decompress_pickle('history/baseline_2epochs.pickle.pbz2'))
+    main()
