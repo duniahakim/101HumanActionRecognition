@@ -5,7 +5,7 @@ import numpy as np
 
 class OurGenerator(keras.utils.Sequence):
     # 'Generates data for Keras'
-    def __init__(self, list_IDs, labels, batch_size=32, dim=(10, 240, 320), n_channels=3,
+    def __init__(self, list_IDs, labels, batch_size=64, dim=(10, 240, 320), n_channels=3,
                  n_classes=101, shuffle=True, use_pretrained = False):
         #'Initialization'
         self.dim = dim
@@ -57,7 +57,7 @@ class OurGenerator(keras.utils.Sequence):
 
 
         if self.use_pretrained:
-            X = np.empty((self.batch_size, 800, 2048))
+            X = np.empty((self.batch_size, 800, 2048, 1))
             y = np.empty((self.batch_size), dtype=int)
 
             for i, ID in enumerate(list_IDs_temp):
@@ -65,7 +65,7 @@ class OurGenerator(keras.utils.Sequence):
                 x = np.array(decompress_pickle('input/' + ID + '.pickle.pbz2'))
                 x = keras.applications.resnet.preprocess_input(x)
                 x = self.model.predict(x)
-                x = x.reshape(-1, 2048)
+                x = x.reshape(-1, 2048, 1)
                 X[i,] = x
 
                 # Store class

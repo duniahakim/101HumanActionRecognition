@@ -2,7 +2,7 @@ from numpy import asarray
 from PIL import Image
 import numpy as np
 from keras.models import Sequential
-from keras.layers import Conv3D, MaxPooling3D, BatchNormalization, Dense, Dropout,Flatten,LSTM
+from keras.layers import Conv2D, MaxPooling2D, BatchNormalization, Dense, Dropout,Flatten,LSTM
 from keras.losses import categorical_crossentropy
 from keras.utils.vis_utils import plot_model
 from keras.optimizers import Adam
@@ -16,19 +16,19 @@ from tensorflow.keras import regularizers
 from lossHistory import LossHistory
 
 
-CHECKPOINT_PATH = "checkpoints/baseline_10epochs"
+CHECKPOINT_PATH = "checkpoints/features_2epochs"
 
 
 def get_CNN_model():
     model = Sequential()
-    model.add(Conv3D(32, kernel_size=(3, 3, 3), activation='relu', kernel_initializer='he_uniform', input_shape=(10, 240, 320, 3),padding ="same"))
-    model.add(MaxPooling3D(pool_size=(1, 2, 2), strides=(1, 2, 2)))
-    model.add(MaxPooling3D(pool_size=(2, 2, 2)))
+    model.add(Conv2D(4, kernel_size=(3, 3), activation='relu', kernel_initializer='he_uniform', input_shape=(800, 2048, 1),padding ="same"))
+    model.add(MaxPooling2D(pool_size=(1, 2), strides=(1, 2)))
+    model.add(MaxPooling2D(pool_size=(2, 2)))
     model.add(BatchNormalization(center=True, scale=True))
     model.add(Dropout(0.5))
 
-    model.add(Conv3D(64, kernel_size=(3, 3, 3), activation='relu', kernel_initializer='he_uniform'))
-    model.add(MaxPooling3D(pool_size=(2, 2, 2)))
+    model.add(Conv2D(8, kernel_size=(2, 2), activation='relu', kernel_initializer='he_uniform'))
+    model.add(MaxPooling2D(pool_size=(2, 2)))
     model.add(BatchNormalization(center=True, scale=True))
     model.add(Dropout(0.5))
     model.add(Flatten())
@@ -41,7 +41,7 @@ def get_CNN_model():
                   optimizer=Adam(lr=0.001),
                   metrics=['accuracy'])
     model.summary()
-    plot_model(model, to_file='plots/baseline.png', show_shapes=True, show_layer_names=True)
+    # plot_model(model, to_file='images/baseline.png', show_shapes=True, show_layer_names=True)
 
     return model
 
@@ -52,8 +52,8 @@ def main():
     history_checkpoint = LossHistory()
     labels = decompress_pickle('labels.pickle.pbz2')
     partition = decompress_pickle('partition.pickle.pbz2')
-    training_generator = OurGenerator(partition['train'], labels, use_pretrained = False)
-    validation_generator = OurGenerator(partition['val'], labels, use_pretrained = False)
+    training_generator = OurGenerator(partition['train'], labels, use_pretrained = True)
+    validation_generator = OurGenerator(partition['val'], labels, use_pretrained = True)
     model = get_CNN_model()
     model.build()
     model.summary()
@@ -61,10 +61,10 @@ def main():
                     validation_data=validation_generator,
                     epochs=2,
                     callbacks=[cp_callback, history_checkpoint])
-    model.save('models/baseline_model')
-    compressed_pickle('history/baseline_2epochs.pickle', history.history)
-    plotLearningCurve(history)
+    model.save('models/features_2epochs')
+    compressed_pickle('history/features_2epochs.pickle', history.history)
+    # plotLearningCurve(history)
 
 
 if __name__ == "__main__":
-    print(decompress_pickle('history/baseline_2epochs.pickle.pbz2'))
+    main()
