@@ -8,9 +8,9 @@ import matplotlib.pyplot as plt
 num_classes = 101
 input_shape = (10, 240, 320, 3)
 batch_size = 64
-# image_size = 72  # We'll resize input images to this size
-patch_size = 10  # Size of the patches to be extract from the input images
-num_patches = 10 * 24 * 32
+image_size = 72  # We'll resize input images to this size
+patch_size = 6  # Size of the patches to be extract from the input images
+num_patches = 10 * 12 * 12
 projection_dim = 64
 num_heads = 4
 transformer_units = [
@@ -35,8 +35,6 @@ class Patches(layers.Layer):
 
     def call(self, images):
         batch_size = tf.shape(images)[0]
-        print(images.shape)
-        images = tf.reshape(images, [-1, input_shape[1], input_shape[2], input_shape[3]])
         print(images.shape)
         patches = tf.image.extract_patches(
             images=images,
@@ -68,10 +66,14 @@ class PatchEncoder(layers.Layer):
 
 def create_vit_classifier():
     inputs = layers.Input(shape=input_shape)
+    images = tf.reshape(inputs, [-1, input_shape[1], input_shape[2], input_shape[3]])
+    images = tf.image.resize(
+        tf.convert_to_tensor(images), size=(image_size, image_size)
+    )
     # Augment data.
     # augmented = data_augmentation(inputs)
     # Create patches.
-    patches = Patches(patch_size)(inputs)
+    patches = Patches(patch_size)(images)
     # Encode patches.
     encoded_patches = PatchEncoder(num_patches, projection_dim)(patches)
 
