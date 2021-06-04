@@ -5,7 +5,7 @@ import keras
 import os
 
 
-history_filename = 'history-checkpoints/features_2epochs.json'
+history_filename = 'history-checkpoints/lstm_2epochs.json'
 
 def saveHist(path, history):
     with codecs.open(path, 'w+', encoding='utf-8') as f:
