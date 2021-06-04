@@ -32,7 +32,7 @@ def main():
     model.compile(loss='categorical_crossentropy',
                   optimizer=Adam(lr=0.001),
                   metrics=['accuracy'])
-    model.build(input_shape = (10, 240, 320, 3))
+    model.build(input_shape = (240, 3200, 3))
     model.summary()
     history = model.fit_generator(generator=training_generator,
                     validation_data=validation_generator,

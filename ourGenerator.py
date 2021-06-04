@@ -70,7 +70,7 @@ class OurGenerator(keras.utils.Sequence):
 
                 # Store class
                 y[i] = self.labels[ID]
-
+            
             return X, keras.utils.to_categorical(y, num_classes=self.n_classes)
 
         else:
@@ -84,5 +84,6 @@ class OurGenerator(keras.utils.Sequence):
 
                 # Store class
                 y[i] = self.labels[ID]
+            X = np.reshape(X, (self.batch_size, 240, 3200, 3))
 
             return X, keras.utils.to_categorical(y, num_classes=self.n_classes)

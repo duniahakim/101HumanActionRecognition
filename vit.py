@@ -6,11 +6,11 @@ import tensorflow_addons as tfa
 import matplotlib.pyplot as plt
 
 num_classes = 101
-input_shape = (10, 240, 320, 3)
+input_shape = (240, 3200, 3)
 batch_size = 64
-image_size = 72  # We'll resize input images to this size
+image_size = (72, 960)  # We'll resize input images to this size
 patch_size = 6  # Size of the patches to be extract from the input images
-num_patches = 10 * 12 * 12
+num_patches = 12 * 160
 projection_dim = 64
 num_heads = 4
 transformer_units = [
@@ -35,7 +35,6 @@ class Patches(layers.Layer):
 
     def call(self, images):
         batch_size = tf.shape(images)[0]
-        print(images.shape)
         patches = tf.image.extract_patches(
             images=images,
             sizes=[1, self.patch_size, self.patch_size, 1],
@@ -44,9 +43,7 @@ class Patches(layers.Layer):
             padding="VALID",
         )
         patch_dims = patches.shape[-1]
-        print(patches.shape)
         patches = tf.reshape(patches, [batch_size, -1, patch_dims])
-        print(patches.shape)
         return patches
 
 
@@ -66,9 +63,9 @@ class PatchEncoder(layers.Layer):
 
 def create_vit_classifier():
     inputs = layers.Input(shape=input_shape)
-    images = tf.reshape(inputs, [-1, input_shape[1], input_shape[2], input_shape[3]])
+    # images = tf.reshape(inputs, [-1, input_shape[1], input_shape[2], input_shape[3]])
     images = tf.image.resize(
-        tf.convert_to_tensor(images), size=(image_size, image_size)
+        tf.convert_to_tensor(inputs), size=image_size
     )
     # Augment data.
     # augmented = data_augmentation(inputs)
